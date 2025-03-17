@@ -9,12 +9,17 @@ on:
   schedule:
     - cron: '0 */6 * * *' # every 6 hours
   workflow_dispatch:
+    inputs:
+      sync_paused:
+        description: 'Set to true to pause syncing'
+        required: false
+        default: 'false'
 
 jobs:
   sync_latest_from_upstream:
     name: Sync latest commits from upstream repo
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork }}
+    if: ${{ github.event.repository.fork && github.event.inputs.sync_paused != 'true' }}
 
     steps:
       - uses: actions/checkout@v4
